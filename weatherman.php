@@ -40,12 +40,48 @@
 
     $filedata = folder_read($files_year,$argv[3]);
 
-    for ($i = 0; $i < sizeof($filedata); $i++) {
-      print_r($filedata[$i]);
-    }
+    $filtered_file_data = filter_data($filedata);
+
+    find_comparison($filtered_file_data);
   }
   else{
     echo "Please Enter a Valid Input\n";
+  }
+
+  function find_comparison ($to_be_compared_array){
+    $highest = 0;
+    $lowest = -80;
+    $humid = 0;
+    for ($i = 0; $i < sizeof($to_be_compared_array); $i++) {
+      $splitted = explode(',',$to_be_compared_array[$i]);
+      if($splitted[1] > $highest){
+        $highest = $splitted[1];
+      }
+      if($splitted[3] > $lowest){
+        $lowest = $splitted[3];
+      }
+      if($splitted[8] > $humid){
+        $humid = $splitted[8];
+      }
+      // if($splitted[$type] != ''){
+      //   array_push($high_low_humid,$splitted[$type]);
+      // }
+    }
+    echo "\nThe Highest Temperature was: ",$highest,"C";
+    echo "\nThe Lowest Temperature was: ",$lowest,"C";
+    echo "\nThe Highest Humidity was: ",$humid,"%\n";
+  }
+
+  function filter_data ($array){
+    $filtered_array = array();
+    foreach ($array as $item) {
+      if (!is_bool($item)) {
+        if($item[0] == 2){
+          array_push($filtered_array,$item);
+        }
+      }
+    }
+    return $filtered_array;
   }
 
   function print_plus($times, $color){
